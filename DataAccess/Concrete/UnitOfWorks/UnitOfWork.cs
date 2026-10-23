@@ -1,0 +1,36 @@
+﻿using Core.DataAccess.Interfaces;
+using DataAccess.Concrete.Data.Context;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace DataAccess.Concrete.UnitOfWorks
+{
+    public class UnitOfWork : IUnitOfWork
+    {
+        private readonly AppDbContext _context;
+        private readonly IProductRepository _productRepository;
+        private readonly ICategoryRepository _categoryRepository;
+
+        public UnitOfWork(AppDbContext context, IProductRepository productRepository, ICategoryRepository categoryRepository)
+        {
+            _context = context;
+            _productRepository = productRepository;
+            _categoryRepository = categoryRepository;
+        }
+
+        public IProductRepository ProductRepository => _productRepository;
+
+        public ICategoryRepository CategoryRepository => _categoryRepository;
+
+        public async ValueTask DisposeAsync()
+        {
+            await _context.DisposeAsync();
+        }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+    }
+}
